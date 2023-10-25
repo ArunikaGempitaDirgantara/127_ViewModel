@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">kotlinB</string>
+    <string name="JK_1">Laki-Laki</string>
+    <string name="JK_2">Perempuan</string>
+    <string name="submit">simpan</string>
+</resources>
