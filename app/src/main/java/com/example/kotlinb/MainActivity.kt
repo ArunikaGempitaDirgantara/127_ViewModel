@@ -32,9 +32,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,6 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kotlinb.Data.DataForm
 import com.example.kotlinb.Data.datasource
 import com.example.kotlinb.Data.datasource.jenis
+import com.example.kotlinb.Data.datasource.stts
 import com.example.kotlinb.ui.theme.KotlinBTheme
 
 
@@ -89,11 +92,17 @@ fun TampilForm(cobaViewModel: CobaViewModel = viewModel()) {
     var textNama by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var textTlp by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
 
     val context = LocalContext.current
     val dataForm: DataForm
     val uiState by cobaViewModel.uiState.collectAsState()
     dataForm = uiState
+
+    Text(text = "Create Your Account",
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.Black)
 
     OutlinedTextField(value = textNama,
         singleLine = true,
@@ -116,6 +125,16 @@ fun TampilForm(cobaViewModel: CobaViewModel = viewModel()) {
         }
     )
 
+    OutlinedTextField(
+        value = email,
+        singleLine = false,
+        shape = MaterialTheme.shapes.large,
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(text = "Email") },
+        onValueChange = {
+            email = it
+        }
+    )
     OutlinedTextField(value = textTlp,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -126,24 +145,29 @@ fun TampilForm(cobaViewModel: CobaViewModel = viewModel()) {
             textTlp = it
         }
     )
-    SelectJK(options = datasource.jenis.map { id -> context.resources.getString(id) },
+
+    SelectJK(options = jenis.map { id -> context.resources.getString(id) },
         onSelectionChanged = {cobaViewModel.setJenisK(it)})
+    SelectStts(options = datasource.stts.map { id -> context.resources.getString(id) },
+        onSelectionChanged = {cobaViewModel.setstts(it)})
     Button(
         modifier = Modifier.fillMaxWidth(),
         onClick = {
-            cobaViewModel.insertData(textNama, textTlp, dataForm.sex, address)
+            cobaViewModel.insertData(textNama, textTlp, dataForm.sex, address, email, stts)
         }
     ) {
         Text(text = stringResource(R.string.submit),
             fontSize = 16.sp
         )
     }
+
     Spacer(modifier = Modifier.height(100.dp))
     TextHasil(
         namanya = cobaViewModel.namaUsr,
         telponnya = cobaViewModel.noTlp,
         jenisnya = cobaViewModel.jenisKL,
-        alamatnya = cobaViewModel.address
+        alamatnya = cobaViewModel.address,
+        emailnya = cobaViewModel.email
     )
 }
 
